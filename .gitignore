@@ -1,0 +1,36 @@
+# OCaml build artefacts
+_build/
+*.cmo
+*.cma
+*.cmi
+*.cmx
+*.cmxa
+*.cmxs
+*.o
+*.a
+
+# Dune / opam artefacts
+*.install
+*.opam-switch
+.opam/
+.merlin
+.ocamlinit
+.dream
+
+# Editor / tooling
+.vscode/
+.idea/
+.DS_Store
+
+# Generated assets and caches
+client/app.bc.js
+client/app.bc.js.map
+static/assets/app.bc.js
+static/assets/app.bc.js.map
+node_modules/
+tmp/
+.cache/
+
+# Optional scripts output
+*.export
+

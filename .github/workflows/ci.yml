@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up OCaml
+        uses: ocaml/setup-ocaml@v3
+        with:
+          ocaml-compiler: 5.2.0
+
+      - name: Install dependencies
+        run: |
+          opam repo add janestreet https://github.com/janestreet/opam-repository.git --yes
+          opam pin add --kind=patch ocamlformat-lib patches/ocamlformat-0.28.1-base_018.patch --yes
+          opam pin add --kind=patch ocamlformat patches/ocamlformat-0.28.1-base_018.patch --yes
+          opam install . --deps-only --with-test --yes
+
+      - name: Build
+        run: opam exec -- dune build @all
+
+      - name: Test
+        run: opam exec -- dune runtest
+

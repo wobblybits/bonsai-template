@@ -1,0 +1,5 @@
+(test
+ (name template_test)
+ (modules template_test)
+ (libraries shared core))
+

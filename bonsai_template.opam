@@ -1,0 +1,34 @@
+opam-version: "2.0"
+version: "0.1.0"
+synopsis: "Starter template for a Dream server with a Bonsai + js_of_ocaml client"
+maintainer: "you@example.com"
+authors: "Template Contributors"
+license: "MIT"
+homepage: "https://github.com/wobblybits/bonsai-template"
+bug-reports: "https://github.com/wobblybits/bonsai-template/issues"
+
+depends: [
+  "ocaml" {>= "5.2.0"}
+  "dune" {>= "3.10"}
+  "dream" {>= "1.0.0~alpha8"}
+  "bonsai" {>= "v0.18~preview"}
+  "core" {>= "v0.18~preview"}
+  "async_kernel" {>= "v0.18~preview"}
+  "ppx_jane" {>= "v0.18~preview"}
+  "js_of_ocaml" {>= "5.0"}
+  "js_of_ocaml-ppx"
+  "ocaml-lsp-server" {>= "1.21.0"}
+  "ocamlformat" {= "0.28.1"}
+  "ocamlformat-lib" {= "0.28.1"}
+]
+
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+]
+
+dev-repo: "git+https://github.com/wobblybits/bonsai-template.git"
+
+extra-files: [
+  ["patches/ocamlformat-0.28.1-base_018.patch" "sha256=0119caf1803e1009d831792e0d29ca998249b48e93b833749872338fdabdcabb"]
+]
+

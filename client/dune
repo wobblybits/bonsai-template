@@ -1,0 +1,7 @@
+(executable
+ (name app)
+ (modules app)
+ (preprocess (pps ppx_jane bonsai.ppx_bonsai))
+ (libraries shared core async_kernel bonsai_web js_of_ocaml)
+ (modes js)
+ (js_of_ocaml (flags (--pretty --source-map))))
