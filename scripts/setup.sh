@@ -159,17 +159,17 @@ if [[ "$CREATE_SWITCH" -eq 1 ]]; then
       SWITCH_MSG="An opam switch named \"$PROJECT_NAME\" already exists; skipped creation."
     else
       if opam switch create "$PROJECT_NAME" 5.2.0 --yes; then
-      if ! opam repo list --short | grep -Fxq "janestreet"; then
-        opam repo add janestreet https://github.com/janestreet/opam-repository.git --yes
-      fi
-      if patch_and_pin ocamlformat-lib "$PROJECT_NAME" \
-        && patch_and_pin ocamlformat "$PROJECT_NAME" \
-        && [[ -n "$OPAM_FILE" ]] \
-        && opam install --switch "$PROJECT_NAME" --yes "$OPAM_FILE" --deps-only; then
-        SWITCH_CREATED=1
-        SWITCH_MSG="Created opam switch \"$PROJECT_NAME\" and installed template dependencies."
-      else
-        SWITCH_MSG="Warning: switch \"$PROJECT_NAME\" was created but dependency installation failed. Consult INSTALL.md."
+        if ! opam repo list --short | grep -Fxq "janestreet"; then
+          opam repo add janestreet https://github.com/janestreet/opam-repository.git --yes
+        fi
+        if patch_and_pin ocamlformat-lib "$PROJECT_NAME" \
+          && patch_and_pin ocamlformat "$PROJECT_NAME" \
+          && [[ -n "$OPAM_FILE" ]] \
+          && opam install --switch "$PROJECT_NAME" --yes "$OPAM_FILE" --deps-only; then
+          SWITCH_CREATED=1
+          SWITCH_MSG="Created opam switch \"$PROJECT_NAME\" and installed template dependencies."
+        else
+          SWITCH_MSG="Warning: switch \"$PROJECT_NAME\" was created but dependency installation failed. Consult INSTALL.md."
         fi
       else
         SWITCH_MSG="Warning: failed to create opam switch \"$PROJECT_NAME\". Consult INSTALL.md."
