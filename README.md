@@ -9,6 +9,7 @@ to serve assets and expose a small API.
 - [opam](https://opam.ocaml.org/doc/Install.html) ≥ 2.1
 - `perl` (required by `scripts/setup.sh` for in-place edits)
 - `make`
+- `patch` (standard Unix `patch` utility; used when installing ocamlformat)
 - [`watchexec`](https://github.com/watchexec/watchexec) (optional, used by `make watch`)
 
 ## Quick start

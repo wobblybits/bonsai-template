@@ -11,6 +11,7 @@ perform the steps manually if you pass `--no-switch`.
 - [opam](https://opam.ocaml.org/doc/Install.html) ≥ 2.1.0
 - OCaml compiler ≥ 5.2.0 (opam will install it for you if it is missing)
 - `perl` (required by `scripts/setup.sh`)
+- `patch` utility (generally available on Unix-like systems)
 - `make`
 - [`watchexec`](https://github.com/watchexec/watchexec) (optional; only needed for `make watch`)
 

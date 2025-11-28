@@ -21,8 +21,16 @@ jobs:
       - name: Install dependencies
         run: |
           opam repo add janestreet https://github.com/janestreet/opam-repository.git --yes
-          opam pin add --kind=patch ocamlformat-lib patches/ocamlformat-0.28.1-base_018.patch --yes
-          opam pin add --kind=patch ocamlformat patches/ocamlformat-0.28.1-base_018.patch --yes
+          apply_patch_pin () {
+            pkg=$1
+            tmp=$(mktemp -d)
+            opam source "${pkg}.0.28.1" --dir="$tmp"
+            patch -d "$tmp" -p1 < patches/ocamlformat-0.28.1-base_018.patch
+            opam pin add --yes "$pkg" "$tmp"
+            rm -rf "$tmp"
+          }
+          apply_patch_pin ocamlformat-lib
+          apply_patch_pin ocamlformat
           opam install . --deps-only --with-test --yes
 
       - name: Build

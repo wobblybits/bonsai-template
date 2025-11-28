@@ -5,6 +5,7 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 TEMPLATE_TOKEN="bonsai_template"
 PATCH_FILE="$ROOT_DIR/patches/ocamlformat-0.28.1-base_018.patch"
+OCAMLFORMAT_VERSION="0.28.1"
 
 usage() {
   cat <<'USAGE'
@@ -117,6 +118,36 @@ else
   echo "Warning: no opam file found. Dependency installation will be skipped." >&2
 fi
 
+patch_and_pin() {
+  local package=$1
+  local switch=$2
+  local tmp_dir
+
+  if [[ ! -f "$PATCH_FILE" ]]; then
+    echo "Warning: patch file $PATCH_FILE not found; skipping pin for $package." >&2
+    return 1
+  fi
+
+  tmp_dir=$(mktemp -d)
+  opam source "${package}.${OCAMLFORMAT_VERSION}" --dir="$tmp_dir" >/dev/null 2>&1 || {
+    echo "Warning: failed to fetch sources for ${package}.${OCAMLFORMAT_VERSION}." >&2
+    rm -rf "$tmp_dir"
+    return 1
+  }
+  if ! patch -d "$tmp_dir" -p1 < "$PATCH_FILE" >/dev/null; then
+    echo "Warning: failed to apply ocamlformat patch to $package." >&2
+    rm -rf "$tmp_dir"
+    return 1
+  fi
+  if ! opam pin add --switch "$switch" --yes "$package" "$tmp_dir" >/dev/null 2>&1; then
+    echo "Warning: opam pin failed for $package." >&2
+    rm -rf "$tmp_dir"
+    return 1
+  fi
+  rm -rf "$tmp_dir"
+  return 0
+}
+
 SWITCH_CREATED=0
 SWITCH_MSG=""
 
@@ -131,18 +162,14 @@ if [[ "$CREATE_SWITCH" -eq 1 ]]; then
       if ! opam repo list --short | grep -Fxq "janestreet"; then
         opam repo add janestreet https://github.com/janestreet/opam-repository.git --yes
       fi
-        if [[ ! -f "$PATCH_FILE" ]]; then
-          SWITCH_MSG="Warning: ocamlformat patch not found at $PATCH_FILE. Switch created without the formatter fix."
-        else
-        if opam pin add --switch "$PROJECT_NAME" --yes --kind=patch ocamlformat-lib "$PATCH_FILE" \
-          && opam pin add --switch "$PROJECT_NAME" --yes --kind=patch ocamlformat "$PATCH_FILE" \
-          && [[ -n "$OPAM_FILE" ]] \
-          && opam install --switch "$PROJECT_NAME" --yes "$OPAM_FILE" --deps-only; then
-            SWITCH_CREATED=1
-            SWITCH_MSG="Created opam switch \"$PROJECT_NAME\" and installed template dependencies."
-          else
-            SWITCH_MSG="Warning: switch \"$PROJECT_NAME\" was created but dependency installation failed. Consult INSTALL.md."
-          fi
+      if patch_and_pin ocamlformat-lib "$PROJECT_NAME" \
+        && patch_and_pin ocamlformat "$PROJECT_NAME" \
+        && [[ -n "$OPAM_FILE" ]] \
+        && opam install --switch "$PROJECT_NAME" --yes "$OPAM_FILE" --deps-only; then
+        SWITCH_CREATED=1
+        SWITCH_MSG="Created opam switch \"$PROJECT_NAME\" and installed template dependencies."
+      else
+        SWITCH_MSG="Warning: switch \"$PROJECT_NAME\" was created but dependency installation failed. Consult INSTALL.md."
         fi
       else
         SWITCH_MSG="Warning: failed to create opam switch \"$PROJECT_NAME\". Consult INSTALL.md."
