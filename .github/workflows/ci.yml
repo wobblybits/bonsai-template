@@ -26,7 +26,11 @@ jobs:
             tmp_dir=$(mktemp -d)
             opam source "${pkg}.0.28.1" --dir="$tmp_dir"
             patch -d "$tmp_dir" -p1 < patches/ocamlformat-0.28.1-base_018.patch
-            opam pin add --yes "$pkg" "$tmp_dir"
+            (
+              set -e
+              cd "$tmp_dir"
+              opam pin add --yes "$pkg" .
+            )
             rm -rf "$tmp_dir"
           }
           apply_patch_pin ocamlformat-lib
