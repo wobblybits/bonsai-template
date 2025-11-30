@@ -160,6 +160,7 @@ if [[ "$CREATE_SWITCH" -eq 1 ]]; then
       SWITCH_MSG="An opam switch named \"$PROJECT_NAME\" already exists; skipped creation."
     else
       if opam switch create "$PROJECT_NAME" 5.2.0 --yes; then
+        eval "$(opam env --switch "$PROJECT_NAME")"
         if ! opam repo list --short | grep -Fxq "janestreet"; then
           opam repo add janestreet https://github.com/janestreet/opam-repository.git --yes
         fi
