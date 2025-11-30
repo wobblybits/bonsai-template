@@ -20,7 +20,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          eval "$(opam env)"
+          eval "$(opam env --switch=5.2.0)"
           opam repo add janestreet https://github.com/janestreet/opam-repository.git --yes
           apply_patch_pin () {
             pkg=$1
