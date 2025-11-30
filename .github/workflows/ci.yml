@@ -20,10 +20,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          SWITCH=$(opam var switch)
-          opam switch set "$SWITCH" >/dev/null
-          export OPAMSWITCH="$SWITCH"
-          eval "$(opam env --switch="$SWITCH")"
+          eval "$(opam env --set-switch)"
           opam repo add janestreet https://github.com/janestreet/opam-repository.git --yes
           apply_patch_pin () {
             pkg=$1
