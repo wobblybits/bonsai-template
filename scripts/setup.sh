@@ -128,23 +128,24 @@ patch_and_pin() {
     return 1
   fi
 
-  tmp_dir=$(mktemp -d)
+  tmp_root=$(mktemp -d)
+  tmp_dir="$tmp_root/${package}"
   if ! opam source "${package}.${OCAMLFORMAT_VERSION}" --dir="$tmp_dir" >/dev/null 2>&1; then
     echo "Warning: failed to fetch sources for ${package}.${OCAMLFORMAT_VERSION}." >&2
-    rm -rf "$tmp_dir"
+    rm -rf "$tmp_root"
     return 1
   fi
   if ! patch -d "$tmp_dir" -p1 < "$PATCH_FILE" >/dev/null; then
     echo "Warning: failed to apply ocamlformat patch to $package." >&2
-    rm -rf "$tmp_dir"
+    rm -rf "$tmp_root"
     return 1
   fi
   if ! (cd "$tmp_dir" && opam pin add --switch "$switch" --yes "$package" . >/dev/null 2>&1); then
     echo "Warning: opam pin failed for $package." >&2
-    rm -rf "$tmp_dir"
+    rm -rf "$tmp_root"
     return 1
   fi
-  rm -rf "$tmp_dir"
+  rm -rf "$tmp_root"
   return 0
 }
 

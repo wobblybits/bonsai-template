@@ -23,7 +23,8 @@ jobs:
           opam repo add janestreet https://github.com/janestreet/opam-repository.git --yes
           apply_patch_pin () {
             pkg=$1
-            tmp_dir=$(mktemp -d)
+            tmp_root=$(mktemp -d)
+            tmp_dir="$tmp_root/${pkg}"
             opam source "${pkg}.0.28.1" --dir="$tmp_dir"
             patch -d "$tmp_dir" -p1 < patches/ocamlformat-0.28.1-base_018.patch
             (
@@ -31,7 +32,7 @@ jobs:
               cd "$tmp_dir"
               opam pin add --yes "$pkg" .
             )
-            rm -rf "$tmp_dir"
+            rm -rf "$tmp_root"
           }
           apply_patch_pin ocamlformat-lib
           apply_patch_pin ocamlformat
