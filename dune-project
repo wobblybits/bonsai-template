@@ -8,6 +8,7 @@
  (depends
   dream
   bonsai
+ bonsai_web
   core
   async_kernel
   ppx_jane

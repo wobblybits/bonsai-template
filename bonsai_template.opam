@@ -12,6 +12,7 @@ depends: [
   "dune" {>= "3.10"}
   "dream" {>= "1.0.0~alpha8"}
   "bonsai" {>= "v0.18~preview"}
+  "bonsai_web" {>= "v0.18~preview"}
   "core" {>= "v0.18~preview"}
   "async_kernel" {>= "v0.18~preview"}
   "ppx_jane" {>= "v0.18~preview"}
